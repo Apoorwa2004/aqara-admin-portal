@@ -14,7 +14,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/AuthContext';
+
 
 const Login: React.FC = () => {
   const navigate = useNavigate()

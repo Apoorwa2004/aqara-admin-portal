@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../config/api'
+import { useAuth } from './AuthContext';
+
 
 // Define quotation type
 interface Quotation {
@@ -41,9 +43,13 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const { isAuthenticated } = useAuth();
+
   useEffect(() => {
+  if (isAuthenticated) {
     fetchQuotations();
-  }, []);
+  }
+}, [isAuthenticated]);
 
   return (
     <QuotationContext.Provider value={{ quotations, fetchQuotations }}>

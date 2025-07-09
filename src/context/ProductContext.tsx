@@ -56,7 +56,8 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
   
   const fetchProducts = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/products`);
+    const response = await axios.get(`${API_BASE_URL}/api/products`, {
+      withCredentials: true,});
     const dbProducts = response.data.map((p: any) => {
       const parseJsonField = (field: any, fallback: any) => {
         if (!field) return fallback;
@@ -98,10 +99,13 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
 };
 
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const { isAuthenticated } = useAuth();
 
+useEffect(() => {
+  if (isAuthenticated) {
+    fetchProducts();
+  }
+}, [isAuthenticated]);
   const addProduct = async (formData: FormData) => {
     try {
       await axios.post(`${API_BASE_URL}/api/products`, formData, {

@@ -1,6 +1,8 @@
 import  { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios'; 
 import API_BASE_URL from '../config/api'
+import { useAuth } from './AuthContext';
+
 
 export interface Category {
   id: string;
@@ -23,9 +25,13 @@ export const useCategories = () => {
 export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
+
+  const { isAuthenticated } = useAuth();
   useEffect(() => {
+  if (isAuthenticated) {
     fetchCategories();
-  }, []);
+  }
+}, [isAuthenticated]);
 
   const fetchCategories = async () => {
     try {

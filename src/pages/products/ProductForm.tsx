@@ -71,6 +71,8 @@ const ProductForm: React.FC = () => {
     mainPhotoRemoved: false,
   });
 
+
+
   useEffect(() => {
     if (isEditMode && id) {
       const fetchProduct = async () => {
@@ -78,11 +80,14 @@ const ProductForm: React.FC = () => {
         try {
           // const token = localStorage.getItem('token');
           const response = await axios.get(`${API_BASE_URL}/api/products/${id}`, 
-           
             { withCredentials: true }
           );
-          const product = response.data;
-          console.log('product'+product);
+          const product = response.data.product;
+          console.log('Fetched product:', product);
+
+         const parsedImageUrls = Array.isArray(product.imageUrls) ? product.imageUrls : [];
+         const parsedVideoUrls = Array.isArray(product.videoUrls) ? product.videoUrls : [];
+         const parsedSpecifications = Array.isArray(product.specifications) ? product.specifications : [];
           
           setFormData({
             name: product.title || '',
@@ -95,22 +100,19 @@ const ProductForm: React.FC = () => {
             price3: product.price3?.toString() || '',
             quantity: product.quantity?.toString() || '',
             status: product.status || 'active',
+              specifications: parsedSpecifications.length ? parsedSpecifications : [{ label: '', value: '' }],
             photo: null,
             galleryPhotos: [],
             videos: [],
-            specifications: product.specifications || [{ label: '', value: '' }],
             photoUrl: product.mainPhoto ? `${API_BASE_URL}/uploads/${product.mainPhoto}` : '',
-            galleryPhotoUrls: (product.imageUrls || []).map((filename: string) => 
-              `${API_BASE_URL}/uploads/${filename}`
-            ),
-            videoUrls: (product.videoUrls || []).map((filename: string) => 
-              `${API_BASE_URL}/uploads/${filename}`
-            ),
+            galleryPhotoUrls: parsedImageUrls.map((filename: string) => `${API_BASE_URL}/uploads/${filename}`),
+            videoUrls: parsedVideoUrls.map((filename: string) => `${API_BASE_URL}/uploads/${filename}`),
             imagesToRemove: [],
             videosToRemove: [],
-            mainPhotoRemoved: false, 
+            mainPhotoRemoved: false,
           });
-        } catch (error) {
+
+        } catch (error: any) {
           console.error('Error fetching product:', error);
           setFormError('Failed to load product data');
           navigate('/products');

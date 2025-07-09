@@ -1,6 +1,8 @@
 import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../config/api'
+import { useAuth } from './AuthContext';
+
 
 export type PartnerType = 'normal' | 'special';
 
@@ -91,10 +93,13 @@ export const PartnerProvider: React.FC<PartnerProviderProps> = ({ children }) =>
   }
 };
 
-
+const { isAuthenticated } = useAuth();
   useEffect(() => {
+  if (isAuthenticated) {
     fetchPartners();
-  }, []);
+  }
+}, [isAuthenticated]);
+
 
   return (
     <PartnerContext.Provider
